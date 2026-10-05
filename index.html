@@ -1,0 +1,117 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Build Back Fitness V4</title>
+<style>
+:root{--a:#dc2638;--b:#ff5b67;--bg:#080a0e;--c:#151922;--c2:#1c2230;--t:#f7f8fb;--m:#9da7b7;--l:#2a3240;--gold:#ffc84c}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 0,#4b1019 0,transparent 28%),linear-gradient(#0d1016,#07080b);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+body.blue{--a:#168cff;--b:#65b7ff;background:radial-gradient(circle at 90% 0,#073661 0,transparent 28%),linear-gradient(#0d1016,#07080b)}
+body.iron{--a:#9da8b6;--b:#e0e5eb;background:radial-gradient(circle at 90% 0,#343941 0,transparent 28%),linear-gradient(#101318,#07080b)}
+.app{max-width:760px;margin:auto;padding:20px 14px 105px}.head{display:flex;justify-content:space-between;align-items:center;padding:10px 4px}.logo{font-size:22px;font-weight:950;letter-spacing:2px}.logo i{color:var(--a);font-style:normal}.sub,.muted{font-size:12px;color:var(--m)}button{font:inherit}.theme{border:1px solid var(--l);background:var(--c);color:var(--t);padding:10px;border-radius:13px}
+.card{background:linear-gradient(145deg,var(--c),var(--c2));border:1px solid var(--l);border-radius:22px;padding:17px;margin:12px 0;box-shadow:0 14px 35px #0005}.label{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--m);font-weight:800}h2{font-size:19px;margin:6px 0 12px}.quote{font-size:19px;font-weight:850;line-height:1.35;margin-top:7px}.badge{display:inline-block;margin-top:10px;padding:6px 9px;border-radius:10px;background:#ffffff0c;font-size:11px;color:var(--m)}
+.bar{height:13px;background:#ffffff10;border-radius:20px;overflow:hidden;margin:11px 0}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--b));border-radius:20px}.gold span{background:linear-gradient(90deg,#d49c25,#ffd66c)}
+.flex{display:flex;gap:10px}.flex>*{flex:1}.stat{background:#ffffff08;padding:12px;border-radius:15px}.big{font-size:22px;font-weight:950}.btn{border:0;border-radius:15px;padding:14px;width:100%;font-weight:900;background:linear-gradient(135deg,var(--a),var(--b));color:white}.ghost{background:#ffffff09;border:1px solid var(--l);color:var(--t)}
+.milestoneHero{border:1px solid #6d5320;background:linear-gradient(145deg,#211c13,var(--c2));position:relative;overflow:hidden}.trophy{font-size:32px;float:right}.goldtxt{color:var(--gold)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{padding:14px;background:#ffffff08;border-radius:16px}.tile b{display:block;margin-bottom:4px}.lock{opacity:.55}.done{border:1px solid #73591d;background:#ffc84c0b}.section{display:none}.section.active{display:block}
+.item{padding:14px 0;border-bottom:1px solid var(--l)}.item:last-child{border:0}.stars{color:var(--gold)}input{width:100%;padding:13px;border:1px solid var(--l);background:#090b10;color:white;border-radius:13px;font-size:16px;margin:5px 0}.chips{display:flex;gap:7px;overflow:auto;margin:10px 0}.chip{white-space:nowrap;padding:9px 11px;border:1px solid var(--l);background:#ffffff08;color:var(--t);border-radius:20px;font-size:12px}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;overflow-x:auto;background:#0a0d12ee;backdrop-filter:blur(18px);border-top:1px solid #2a303b;padding:8px max(8px,calc((100vw - 760px)/2)) calc(8px + env(safe-area-inset-bottom));z-index:10}.nav button{min-width:78px;background:none;border:0;color:#8f99a8;font-size:10px;padding:5px}.nav b{display:block;font-size:20px}.nav .on{color:var(--b)}
+</style></head><body><div class="app">
+<div class="head"><div><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • V6</div></div><button class="theme" onclick="cycleTheme()">🎨 Theme</button></div>
+
+<section id="today" class="section active">
+<div class="card"><div class="label">Daily focus</div><div class="quote">Today's work becomes tomorrow's baseline.</div><span class="badge">🔥 Cut Month • Road Map</span></div>
+<div class="card"><div class="label">Goal progress</div><div class="flex" style="align-items:end;margin-top:6px"><div><div class="big">—%</div><div class="muted">toward goal</div></div><div class="muted" style="text-align:right">Start — lb<br>Goal — lb</div></div><div class="bar"><span style="width:0%"></span></div><div class="muted">Updates automatically from your weigh-ins.</div></div>
+
+<div class="card milestoneHero" onclick="show('milestones')" style="cursor:pointer"><span class="trophy">🏆</span><div class="label goldtxt">Next milestone</div><h2>25% of Weight Goal</h2><div class="bar gold"><span style="width:0%"></span></div><div class="muted">Your next milestone will calculate from your real starting, current and goal weights.</div><button class="btn ghost" style="margin-top:12px">VIEW MILESTONES</button></div>
+
+<div class="card"><h2>Today's Mission</h2><div class="flex"><div class="stat"><div class="label">Workout</div><div class="big">Chest</div><div class="muted">+ Triceps</div></div><div class="stat"><div class="label">Readiness</div><div class="big">— / 5</div><div class="muted">Before workout</div></div></div><button class="btn" style="margin-top:12px" onclick="show('workout')">START WORKOUT</button></div>
+<div class="card"><h2>Nutrition</h2><div class="grid"><div class="tile"><b>Calories</b><span class="muted">— / target</span></div><div class="tile"><b>Protein</b><span class="muted">— g</span></div><div class="tile"><b>Carbs</b><span class="muted">— g</span></div><div class="tile"><b>Fat</b><span class="muted">— g</span></div><div class="tile"><b>Fiber</b><span class="muted">— g</span></div><div class="tile"><b>Water</b><span class="muted">— oz</span></div></div></div>
+</section>
+
+
+<section id="calendar" class="section">
+<div class="card"><div class="label">Training calendar</div><h2>October 2026</h2>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:12px">
+<div class="muted">S</div><div class="muted">M</div><div class="muted">T</div><div class="muted">W</div><div class="muted">T</div><div class="muted">F</div><div class="muted">S</div>
+<div></div><div></div><div></div><div></div>
+<button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,1)">1</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,2)">2</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,3)">3</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,4)">4</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,5)">5</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,6)">6</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,7)">7</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,8)">8</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,9)">9</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,10)">10</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,11)">11</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,12)">12</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,13)">13</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,14)">14</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,15)">15</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,16)">16</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,17)">17</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,18)">18</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,19)">19</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,20)">20</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,21)">21</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,22)">22</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,23)">23</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,24)">24</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,25)">25</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,26)">26</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,27)">27</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,28)">28</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,29)">29</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,30)">30</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,31)">31</button>
+</div></div>
+<div class="card"><div class="label">Selected date</div><h2 id="selectedDate">October 4, 2026</h2>
+<div class="quote" style="font-size:16px">Consistency compounds.</div>
+<div class="grid" style="margin-top:12px">
+<div class="tile"><b>Calories</b><span class="muted">—</span></div>
+<div class="tile"><b>Protein</b><span class="muted">— g</span></div>
+<div class="tile"><b>Water</b><span class="muted">— oz</span></div>
+<div class="tile"><b>Weight</b><span class="muted">— lb</span></div>
+</div>
+<div class="flex" style="margin-top:12px"><button class="btn ghost" onclick="show('food')">🍽 Nutrition & Daily</button><button class="btn ghost" onclick="show('workout')">🏋 Workout</button></div>
+<div class="item"><b>Road Map Phase</b><div class="muted">Cut Month • Planned vs. actual activity will live here.</div></div>
+</div></section>
+
+<section id="milestones" class="section">
+<div class="card"><div class="label goldtxt">Trophy case</div><h2>🏆 Milestones</h2><div class="muted">Achievements unlock automatically from the data you log. No manually awarding yourself trophies. Society has standards.</div></div>
+<div class="card"><div class="label">Weight milestones</div><div class="grid" style="margin-top:10px">
+<div class="tile lock"><b>🏅 25%</b><span class="muted">Weight goal progress</span></div>
+<div class="tile lock"><b>🥈 50%</b><span class="muted">Halfway there</span></div>
+<div class="tile lock"><b>🥇 75%</b><span class="muted">Final stretch</span></div>
+<div class="tile lock"><b>🏆 100%</b><span class="muted">Goal reached</span></div></div>
+<div class="item"><b>10 lb Lost</b><div class="muted">Unlock date appears here</div></div><div class="item"><b>25 lb Lost</b><div class="muted">Unlock date appears here</div></div><div class="item"><b>50 lb Lost</b><div class="muted">Unlock date appears here</div></div></div>
+<div class="card"><div class="label">Strength milestones</div><div class="item"><b>💪 Personal Records</b><div class="muted">Bench • Shoulder Press • Pulldown • Curls • Other lifts</div></div><div class="item"><b>📈 Strength Progress</b><div class="muted">Automatically compares current performance with workout history.</div></div></div>
+<div class="card"><div class="label">Consistency milestones</div><div class="grid" style="margin-top:10px"><div class="tile"><b>🔥 7</b><span class="muted">Workouts</span></div><div class="tile"><b>🔥 25</b><span class="muted">Workouts</span></div><div class="tile"><b>🔥 50</b><span class="muted">Workouts</span></div><div class="tile"><b>🔥 100</b><span class="muted">Workouts</span></div></div><div class="item"><b>Protein Streak</b><div class="muted">Days hitting your protein target</div></div><div class="item"><b>Hydration Streak</b><div class="muted">Days hitting your water target</div></div><div class="item"><b>Creatine Streak</b><div class="muted">Consistency tracked automatically</div></div></div>
+<div class="card"><div class="label">Body progress</div><div class="item"><b>📏 Measurements</b><div class="muted">Waist, chest, arms, thighs and other measurements</div></div><div class="item"><b>📸 Progress Photos</b><div class="muted">Optional photo checkpoints linked to dates</div></div></div>
+</section>
+
+<section id="food" class="section"><div class="card"><h2>Food & Nutrition</h2><div class="chips"><button class="chip">＋ Add Food</button><button class="chip" onclick="document.getElementById('cam').click()">📸 Scan Label</button><button class="chip">🍽️ Build Meal</button><button class="chip">⭐ Favorites</button></div><input id="cam" type="file" accept="image/*" capture="environment" hidden><input placeholder="Describe what you ate..."><button class="btn">ANALYZE & REVIEW</button></div><div class="card"><div class="label">Food library</div><div class="item"><b>Saved foods appear here <span class="stars">☆☆☆☆☆</span></b><div class="muted">Tap for calories, protein, carbs, fat, fiber and sodium.</div></div></div></section>
+
+<section id="workout" class="section"><div class="card"><h2>Workout</h2><div class="label">Readiness</div><div class="chips"><button class="chip">1 😵</button><button class="chip">2</button><button class="chip">3</button><button class="chip">4</button><button class="chip">5 🔥</button></div><div class="item"><b>Bench Press</b><div class="muted">Last time: —</div><div class="flex"><input placeholder="Weight"><input placeholder="10-10-10"></div></div><div class="item"><b>Incline Dumbbell Press</b><div class="muted">Last time: —</div><div class="flex"><input placeholder="Weight"><input placeholder="10-10-8"></div></div><button class="btn">FINISH WORKOUT</button></div></section>
+
+<section id="road" class="section"><div class="card"><h2>Road Map</h2><div class="item"><b>🔥 Cut Month</b><div class="muted">Current phase • Fat loss + strength retention</div></div><div class="item"><b>Strength Block</b><div class="muted">Progressive overload</div></div><div class="item"><b>Advanced Block</b><div class="muted">Advanced AI-assisted programming</div></div><div class="item"><b>Deload</b><div class="muted">Recovery and reduced volume</div></div><div class="item"><b>Next Cut</b><div class="muted">Targets recalculated from actual progress</div></div></div></section>
+
+<section id="weigh" class="section"><div class="card"><h2>Weigh-In</h2><input id="w" inputmode="decimal" placeholder="Today's weight (lb)"><button class="btn" onclick="saveW()">SAVE WEIGH-IN</button><div id="wm" class="muted" style="margin-top:10px">Prototype saves this entry locally on this device/browser.</div></div></section>
+
+
+<section id="progress" class="section">
+<div class="card"><div class="label">Progress dashboard</div><h2>Your Trends</h2>
+<div class="grid"><div class="tile"><b>Weight Trend</b><span class="muted">Weigh-in history + 7-day average</span></div>
+<div class="tile"><b>Strength Trend</b><span class="muted">Exercise history + PRs</span></div>
+<div class="tile"><b>Nutrition</b><span class="muted">Calories, macros, fiber & water</span></div>
+<div class="tile"><b>Consistency</b><span class="muted">Workout and goal adherence</span></div></div>
+</div>
+<div class="card"><div class="label">Goal progress</div><div class="bar"><span style="width:0%"></span></div><div class="muted">Starting weight → current weight → goal weight. Real values populate from your profile and weigh-ins.</div></div>
+</section>
+
+<section id="coach" class="section"><div class="card"><h2>✦ AI Coach</h2><div class="item"><b>Coach Thoughts</b><div class="muted">Analyzes Road Map, workouts, nutrition, weigh-ins and recovery before recommending changes.</div></div><input placeholder="Ask Coach anything..."><button class="btn">ASK COACH</button></div><div class="card"><div class="label">Plan adjustment</div><h2>Adjust My Week</h2><div class="muted">Miss a workout? Coach can rebuild the remaining week while protecting recovery and Road Map progress.</div><button class="btn ghost" style="margin-top:12px">BUILD RECOMMENDATION</button></div></section>
+</div>
+
+<nav class="nav">
+<button class="on" data-x="today" onclick="show('today')"><b>⌂</b>Today</button>
+<button data-x="calendar" onclick="show('calendar')"><b>▦</b>Calendar</button>
+<button data-x="milestones" onclick="show('milestones')"><b>🏆</b>Milestones</button>
+<button data-x="food" onclick="show('food')"><b>🍽</b>Food</button>
+<button data-x="workout" onclick="show('workout')"><b>🏋</b>Workout</button>
+<button data-x="road" onclick="show('road')"><b>🗺</b>Road Map</button>
+<button data-x="weigh" onclick="show('weigh')"><b>⚖</b>Weigh-In</button>
+<button data-x="progress" onclick="show('progress')"><b>📈</b>Progress</button>
+<button data-x="coach" onclick="show('coach')"><b>✦</b>AI Coach</button>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://oydqpehhxnlyuyrpbefy.supabase.co";
+const SUPABASE_KEY="sb_publishable_6JSAEGGEP1DTPBbv7lZxwg_joGIS0F4";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null;
+
+function authOverlay(){
+  let d=document.createElement("div"); d.id="authGate"; d.style.cssText="position:fixed;inset:0;background:#090a0d;z-index:9999;padding:28px;overflow:auto";
+  d.innerHTML=`<div style="max-width:520px;margin:50px auto"><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • SECURE SYNC</div><div class="card" style="margin-top:24px"><h2>Sign in to your tracker</h2><div class="muted">Your entries will sync securely to your Build Back Fitness database.</div><input id="authEmail" type="email" placeholder="Email" autocomplete="email"><input id="authPass" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><button class="btn" onclick="signIn()">SIGN IN</button><button class="btn ghost" style="margin-top:10px" onclick="signUp()">CREATE ACCOUNT</button><div id="authMsg" class="muted" style="margin-top:12px"></div></div></div>`;
+  document.body.appendChild(d);
+}
+async function signIn(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Signing in…";let {data,error}=await db.auth.signInWithPassword({email,password});if(error){authMsg.textContent=error.message;return;}currentUser=data.user;await ensureProfile();authGate.remove();await loadLatestWeight();}
+async function signUp(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Creating account…";let {data,error}=await db.auth.signUp({email,password});if(error){authMsg.textContent=error.message;return;}if(data.session){currentUser=data.user;await ensureProfile();authGate.remove();await loadLatestWeight();}else authMsg.textContent="Account created. Check your email to confirm it, then come back and sign in.";}
+async function ensureProfile(){if(!currentUser)return;await db.from("profiles").upsert({id:currentUser.id,display_name:"Blake"},{onConflict:"id"});}
+async function loadLatestWeight(){if(!currentUser)return;let {data}=await db.from("daily_logs").select("weight,log_date").eq("profile_id",currentUser.id).not("weight","is",null).order("log_date",{ascending:false}).limit(1);if(data&&data[0]){localStorage.setItem("bbv4w",data[0].weight);let wm=document.getElementById("wm");if(wm)wm.textContent="Last synced: "+data[0].weight+" lb on "+data[0].log_date;}}
+async function initSync(){let {data}=await db.auth.getSession();if(data.session){currentUser=data.session.user;await ensureProfile();await loadLatestWeight();}else authOverlay();}
+
+function pickDay(el,d){document.querySelectorAll('#calendar .chip').forEach(x=>x.style.background='#ffffff08');el.style.background='var(--a)';document.getElementById('selectedDate').textContent='October '+d+', 2026';}
+function show(id){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('on',e.dataset.x===id));scrollTo(0,0)}
+let themes=['','blue','iron'],ti=0;function cycleTheme(){ti=(ti+1)%themes.length;document.body.className=themes[ti]}
+async function saveW(){let x=parseFloat(document.getElementById('w').value);if(!x)return;if(!currentUser){document.getElementById('wm').textContent='Please sign in first.';return;}let today=new Date().toLocaleDateString('en-CA');document.getElementById('wm').textContent='Saving…';let {error}=await db.from('daily_logs').upsert({profile_id:currentUser.id,log_date:today,weight:x},{onConflict:'profile_id,log_date'});if(error){document.getElementById('wm').textContent='Could not sync: '+error.message;return;}localStorage.setItem('bbv4w',x);document.getElementById('wm').textContent='Synced securely: '+x+' lb';}
+window.addEventListener('load',initSync);
+</script></body></html>
