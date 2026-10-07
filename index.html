@@ -17,12 +17,12 @@ body.iron{--a:#9da8b6;--b:#e0e5eb;background:radial-gradient(circle at 90% 0,#34
 
 <section id="today" class="section active">
 <div class="card"><div class="label">Daily focus</div><div class="quote">Today's work becomes tomorrow's baseline.</div><span class="badge">🔥 Cut Month • Road Map</span></div>
-<div class="card"><div class="label">Goal progress</div><div class="flex" style="align-items:end;margin-top:6px"><div><div class="big">—%</div><div class="muted">toward goal</div></div><div class="muted" style="text-align:right">Start — lb<br>Goal — lb</div></div><div class="bar"><span style="width:0%"></span></div><div class="muted">Updates automatically from your weigh-ins.</div></div>
+<div class="card"><div class="label">Goal progress</div><div class="flex" style="align-items:end;margin-top:6px"><div><div id="todayGoalPercent" class="big">—%</div><div class="muted">toward goal</div></div><div class="muted" style="text-align:right">Start <span id="todayStartWeight">—</span> lb<br>Current <span id="todayCurrentWeight">—</span> lb<br>Goal <span id="todayGoalWeight">—</span> lb</div></div><div class="bar"><span id="todayGoalBar" style="width:0%"></span></div><div id="todayGoalStatus" class="muted">Updates automatically from your weigh-ins.</div></div>
 
-<div class="card milestoneHero" onclick="show('milestones')" style="cursor:pointer"><span class="trophy">🏆</span><div class="label goldtxt">Next milestone</div><h2>25% of Weight Goal</h2><div class="bar gold"><span style="width:0%"></span></div><div class="muted">Your next milestone will calculate from your real starting, current and goal weights.</div><button class="btn ghost" style="margin-top:12px">VIEW MILESTONES</button></div>
+<div class="card milestoneHero" onclick="show('milestones')" style="cursor:pointer"><span class="trophy">🏆</span><div class="label goldtxt">Next milestone</div><h2 id="todayMilestoneTitle">— of Weight Goal</h2><div class="bar gold"><span id="todayMilestoneBar" style="width:0%"></span></div><div id="todayMilestoneStatus" class="muted">Your next milestone will calculate from your real starting, current and goal weights.</div><button class="btn ghost" style="margin-top:12px">VIEW MILESTONES</button></div>
 
 <div class="card"><h2>Today's Mission</h2><div class="flex"><div class="stat"><div class="label">Workout</div><div class="big">Chest</div><div class="muted">+ Triceps</div></div><div class="stat"><div class="label">Readiness</div><div class="big">— / 5</div><div class="muted">Before workout</div></div></div><button class="btn" style="margin-top:12px" onclick="show('workout')">START WORKOUT</button></div>
-<div class="card"><h2>Nutrition</h2><div class="grid"><div class="tile"><b>Calories</b><span class="muted">— / target</span></div><div class="tile"><b>Protein</b><span class="muted">— g</span></div><div class="tile"><b>Carbs</b><span class="muted">— g</span></div><div class="tile"><b>Fat</b><span class="muted">— g</span></div><div class="tile"><b>Fiber</b><span class="muted">— g</span></div><div class="tile"><b>Water</b><span class="muted">— oz</span></div></div></div>
+<div class="card"><h2>Nutrition</h2><div class="grid"><div class="tile"><b>Calories</b><span id="todayCalories" class="muted">— / target</span></div><div class="tile"><b>Protein</b><span id="todayProtein" class="muted">— g</span></div><div class="tile"><b>Carbs</b><span id="todayCarbs" class="muted">— g</span></div><div class="tile"><b>Fat</b><span id="todayFat" class="muted">— g</span></div><div class="tile"><b>Fiber</b><span id="todayFiber" class="muted">— g</span></div><div class="tile"><b>Water</b><span id="todayWater" class="muted">— oz</span></div></div></div>
 </section>
 
 
@@ -103,15 +103,82 @@ function authOverlay(){
   d.innerHTML=`<div style="max-width:520px;margin:50px auto"><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • SECURE SYNC</div><div class="card" style="margin-top:24px"><h2>Sign in to your tracker</h2><div class="muted">Your entries will sync securely to your Build Back Fitness database.</div><input id="authEmail" type="email" placeholder="Email" autocomplete="email"><input id="authPass" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><button class="btn" onclick="signIn()">SIGN IN</button><button class="btn ghost" style="margin-top:10px" onclick="signUp()">CREATE ACCOUNT</button><div id="authMsg" class="muted" style="margin-top:12px"></div></div></div>`;
   document.body.appendChild(d);
 }
-async function signIn(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Signing in…";let {data,error}=await db.auth.signInWithPassword({email,password});if(error){authMsg.textContent=error.message;return;}currentUser=data.user;authGate.remove();await loadLatestWeight();}
-async function signUp(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Creating account…";let {data,error}=await db.auth.signUp({email,password});if(error){authMsg.textContent=error.message;return;}if(data.session){currentUser=data.user;authGate.remove();await loadLatestWeight();}else authMsg.textContent="Account created. Check your email to confirm it, then come back and sign in.";}
+async function signIn(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Signing in…";let {data,error}=await db.auth.signInWithPassword({email,password});if(error){authMsg.textContent=error.message;return;}currentUser=data.user;authGate.remove();await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}
+async function signUp(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Creating account…";let {data,error}=await db.auth.signUp({email,password});if(error){authMsg.textContent=error.message;return;}if(data.session){currentUser=data.user;authGate.remove();await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}else authMsg.textContent="Account created. Check your email to confirm it, then come back and sign in.";}
+
+
+function localLogDate(){
+  const now=new Date();
+  return now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+}
+function dashboardNumber(value){
+  if(value===null||value===undefined||value==="")return null;
+  const number=Number(value);
+  return Number.isFinite(number)?number:null;
+}
+function dashboardValue(value){
+  return value===null?"—":value.toLocaleString(undefined,{maximumFractionDigits:1});
+}
+function renderTodayGoal(goal,weight){
+  const start=dashboardNumber(goal?.starting_weight);
+  const target=dashboardNumber(goal?.goal_weight);
+  const current=dashboardNumber(weight?.Weight);
+  document.getElementById("todayStartWeight").textContent=dashboardValue(start);
+  document.getElementById("todayCurrentWeight").textContent=dashboardValue(current);
+  document.getElementById("todayGoalWeight").textContent=dashboardValue(target);
+  const ready=start>0&&target>0&&current>0;
+  const progress=ready?(start===target?(current===target?100:0):Math.max(0,Math.min(100,(current-start)/(target-start)*100))):null;
+  document.getElementById("todayGoalPercent").textContent=progress===null?"—%":Math.round(progress)+"%";
+  document.getElementById("todayGoalBar").style.width=(progress??0)+"%";
+  document.getElementById("todayGoalStatus").textContent=ready?"Updates automatically from your weigh-ins.":"Add starting and goal weights and a weigh-in to calculate progress.";
+  const milestones=[25,50,75,100].map(percent=>({percent,weight:ready?start+(target-start)*percent/100:null}));
+  const next=milestones.find(m=>m.percent>progress)||milestones[3];
+  document.getElementById("todayMilestoneTitle").textContent=progress===null?"— of Weight Goal":progress>=100?"100% • Goal reached":next.percent+"% of Weight Goal";
+  document.getElementById("todayMilestoneBar").style.width=(progress===null?0:Math.min(100,progress/next.percent*100))+"%";
+  document.getElementById("todayMilestoneStatus").textContent=progress===null?"Your next milestone will calculate from your real starting, current and goal weights.":progress>=100?"Goal reached at "+dashboardValue(target)+" lb.":"Reach approximately "+dashboardValue(next.weight)+" lb ("+dashboardValue(Math.abs(current-next.weight))+" lb to go).";
+}
+function renderTodayNutrition(rows){
+  // Weigh-ins insert separate rows, so a newer weight-only row must not hide nutrition.
+  [["Calories","calories",""],["Protein","protein"," g"],["Carbs","carbs"," g"],["Fat","fat"," g"],["Fiber","Fiber"," g"],["Water","Water_oz"," oz"]].forEach(([label,column,unit])=>{
+    const row=rows.find(entry=>dashboardNumber(entry[column])!==null);
+    document.getElementById("today"+label).textContent=dashboardValue(dashboardNumber(row?.[column]))+unit;
+  });
+}
+let todayRequest=0;
+async function loadTodayDashboard(){
+  if(!currentUser)return;
+  const userId=currentUser.id,request=++todayRequest;
+  try{
+    const [goalResult,weightResult,nutritionResult]=await Promise.all([
+      db.from("fitness_goals").select("starting_weight,goal_weight").eq("user_id",currentUser.id).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1),
+      db.from("daily_logs").select("Weight,log_date").eq("user_id",currentUser.id).not("Weight","is",null).order("log_date",{ascending:false,nullsFirst:false}).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1),
+      db.from("daily_logs").select("calories,protein,carbs,fat,Fiber,Water_oz").eq("user_id",currentUser.id).eq("log_date",localLogDate()).order("created_at",{ascending:false}).order("id",{ascending:false})
+    ]);
+    if(currentUser?.id!==userId||request!==todayRequest)return;
+    renderTodayGoal(goalResult.error?null:goalResult.data?.[0],weightResult.error?null:weightResult.data?.[0]);
+    renderTodayNutrition(nutritionResult.error?[]:nutritionResult.data||[]);
+    if(goalResult.error||weightResult.error){
+      document.getElementById("todayGoalStatus").textContent="Could not load goal progress. Return to Today to retry.";
+      document.getElementById("todayMilestoneStatus").textContent="Could not load milestones. Return to Today to retry.";
+    }
+    if(nutritionResult.error){
+      ["Calories","Protein","Carbs","Fat","Fiber","Water"].forEach(label=>document.getElementById("today"+label).textContent="Could not load");
+    }
+  }catch(error){
+    if(currentUser?.id!==userId||request!==todayRequest)return;
+    renderTodayGoal(null,null);
+    renderTodayNutrition([]);
+    document.getElementById("todayGoalStatus").textContent="Could not load Today data. Return to Today to retry.";
+    document.getElementById("todayMilestoneStatus").textContent="Could not load milestones. Return to Today to retry.";
+  }
+}
 
 async function loadLatestWeight(){if(!currentUser)return;let {data}=await db.from("daily_logs").select("Weight,log_date").eq("user_id",currentUser.id).not("Weight","is",null).order("log_date",{ascending:false}).limit(1);if(data&&data[0]){localStorage.setItem("bbv4w",data[0].Weight);let wm=document.getElementById("wm");if(wm)wm.textContent="Last synced: "+data[0].Weight+" lb on "+data[0].log_date;}}
-async function initSync(){let {data}=await db.auth.getSession();if(data.session){currentUser=data.session.user;await loadLatestWeight();}else authOverlay();}
+async function initSync(){let {data}=await db.auth.getSession();if(data.session){currentUser=data.session.user;await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}else authOverlay();}
 
 function pickDay(el,d){document.querySelectorAll('#calendar .chip').forEach(x=>x.style.background='#ffffff08');el.style.background='var(--a)';document.getElementById('selectedDate').textContent='October '+d+', 2026';}
-function show(id){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('on',e.dataset.x===id));scrollTo(0,0)}
+function show(id){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('on',e.dataset.x===id));scrollTo(0,0);if(id==='today')loadTodayDashboard();}
 let themes=['','blue','iron'],ti=0;function cycleTheme(){ti=(ti+1)%themes.length;document.body.className=themes[ti]}
-async function saveW(){let x=parseFloat(document.getElementById('w').value);if(!x)return;if(!currentUser){document.getElementById('wm').textContent='Please sign in first.';return;}let today=new Date().toLocaleDateString('en-CA');document.getElementById('wm').textContent='Saving…';let {error}=await db.from('daily_logs').insert({user_id:currentUser.id,log_date:today,Weight:x});if(error){document.getElementById('wm').textContent='Could not sync: '+error.message;return;}localStorage.setItem('bbv4w',x);document.getElementById('wm').textContent='Synced securely: '+x+' lb';}
+async function saveW(){let x=parseFloat(document.getElementById('w').value);if(!x)return;if(!currentUser){document.getElementById('wm').textContent='Please sign in first.';return;}let today=localLogDate();document.getElementById('wm').textContent='Saving…';let {error}=await db.from('daily_logs').insert({user_id:currentUser.id,log_date:today,Weight:x});if(error){document.getElementById('wm').textContent='Could not sync: '+error.message;return;}localStorage.setItem('bbv4w',x);document.getElementById('wm').textContent='Synced securely: '+x+' lb';await loadTodayDashboard();}
 window.addEventListener('load',initSync);
 </script></body></html>
