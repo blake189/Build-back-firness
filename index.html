@@ -13,16 +13,32 @@ body.iron{--a:#9da8b6;--b:#e0e5eb;background:radial-gradient(circle at 90% 0,#34
 .item{padding:14px 0;border-bottom:1px solid var(--l)}.item:last-child{border:0}.stars{color:var(--gold)}input{width:100%;padding:13px;border:1px solid var(--l);background:#090b10;color:white;border-radius:13px;font-size:16px;margin:5px 0}.chips{display:flex;gap:7px;overflow:auto;margin:10px 0}.chip{white-space:nowrap;padding:9px 11px;border:1px solid var(--l);background:#ffffff08;color:var(--t);border-radius:20px;font-size:12px}
 .nav{position:fixed;left:0;right:0;bottom:0;display:flex;overflow-x:auto;background:#0a0d12ee;backdrop-filter:blur(18px);border-top:1px solid #2a303b;padding:8px max(8px,calc((100vw - 760px)/2)) calc(8px + env(safe-area-inset-bottom));z-index:10}.nav button{min-width:78px;background:none;border:0;color:#8f99a8;font-size:10px;padding:5px}.nav b{display:block;font-size:20px}.nav .on{color:var(--b)}
 </style></head><body><div class="app">
-<div class="head"><div><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • V6</div></div><button class="theme" onclick="cycleTheme()">🎨 Theme</button></div>
+<div class="head"><div><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • V6</div></div><div style="display:flex;gap:7px;align-items:center"><button class="theme" onclick="cycleTheme()">🎨 Theme</button><button id="signOutButton" class="chip" onclick="signOut()">Sign Out</button></div></div>
 
 <section id="today" class="section active">
 <div class="card"><div class="label">Daily focus</div><div class="quote">Today's work becomes tomorrow's baseline.</div><span class="badge">🔥 Cut Month • Road Map</span></div>
-<div class="card"><div class="label">Goal progress</div><div class="flex" style="align-items:end;margin-top:6px"><div><div id="todayGoalPercent" class="big">—%</div><div class="muted">toward goal</div></div><div class="muted" style="text-align:right">Start <span id="todayStartWeight">—</span> lb<br>Current <span id="todayCurrentWeight">—</span> lb<br>Goal <span id="todayGoalWeight">—</span> lb</div></div><div class="bar"><span id="todayGoalBar" style="width:0%"></span></div><div id="todayGoalStatus" class="muted">Updates automatically from your weigh-ins.</div></div>
+<div class="card"><div class="label">Goal progress</div><div class="flex" style="align-items:end;margin-top:6px"><div><div id="todayGoalPercent" class="big">—%</div><div class="muted">toward goal</div></div><div class="muted" style="text-align:right">Start <span id="todayStartWeight">—</span> lb<br>Current <span id="todayCurrentWeight">—</span> lb<br>Goal <span id="todayGoalWeight">—</span> lb</div></div><div class="bar"><span id="todayGoalBar" style="width:0%"></span></div><div id="todayGoalStatus" class="muted">Updates automatically from your weigh-ins.</div><button class="btn ghost" style="margin-top:12px" onclick="openGoalSetup()">EDIT GOAL</button></div>
+<div id="goalSetup" class="card" hidden><h2>Goal Setup</h2><form id="goalForm" onsubmit="event.preventDefault();saveGoal()"><label class="label" for="goalStart">Starting Weight (lb)</label><input id="goalStart" type="number" min="0.1" step="any" required><label class="label" for="goalTarget">Goal Weight (lb)</label><input id="goalTarget" type="number" min="0.1" step="any" required><label class="label" for="goalDate">Target Date (optional)</label><input id="goalDate" type="date"><div class="flex" style="margin-top:12px"><button id="goalSave" class="btn" type="submit">SAVE GOAL</button><button class="btn ghost" type="button" onclick="document.getElementById('goalSetup').hidden=true">CLOSE</button></div><div id="goalMsg" class="muted" style="margin-top:10px" role="status"></div></form></div>
 
 <div class="card milestoneHero" onclick="show('milestones')" style="cursor:pointer"><span class="trophy">🏆</span><div class="label goldtxt">Next milestone</div><h2 id="todayMilestoneTitle">— of Weight Goal</h2><div class="bar gold"><span id="todayMilestoneBar" style="width:0%"></span></div><div id="todayMilestoneStatus" class="muted">Your next milestone will calculate from your real starting, current and goal weights.</div><button class="btn ghost" style="margin-top:12px">VIEW MILESTONES</button></div>
 
-<div class="card"><h2>Today's Mission</h2><div class="flex"><div class="stat"><div class="label">Workout</div><div class="big">Chest</div><div class="muted">+ Triceps</div></div><div class="stat"><div class="label">Readiness</div><div class="big">— / 5</div><div class="muted">Before workout</div></div></div><button class="btn" style="margin-top:12px" onclick="show('workout')">START WORKOUT</button></div>
+<div class="card"><h2>Today's Mission</h2><div class="flex"><div class="stat"><div class="label">Workout</div><div class="muted" style="margin-top:6px">No workout planned</div></div><div class="stat"><div class="label">Readiness</div><div class="big">— / 5</div><div class="muted">Before workout</div></div></div><button class="btn" style="margin-top:12px" onclick="show('workout')">START WORKOUT</button></div>
 <div class="card"><h2>Nutrition</h2><div class="grid"><div class="tile"><b>Calories</b><span id="todayCalories" class="muted">— / target</span></div><div class="tile"><b>Protein</b><span id="todayProtein" class="muted">— g</span></div><div class="tile"><b>Carbs</b><span id="todayCarbs" class="muted">— g</span></div><div class="tile"><b>Fat</b><span id="todayFat" class="muted">— g</span></div><div class="tile"><b>Fiber</b><span id="todayFiber" class="muted">— g</span></div><div class="tile"><b>Water</b><span id="todayWater" class="muted">— oz</span></div></div></div>
+
+<div class="card"><h2>Quick Daily Log</h2><form id="quickLogForm" onsubmit="event.preventDefault();saveQuickLog()">
+<label class="label" for="quickWater">Water (oz)</label><input id="quickWater" type="number" min="0" step="any" placeholder="Water in ounces">
+<label class="label" for="quickCreatine">Creatine (g)</label><input id="quickCreatine" type="number" min="0" step="any" placeholder="Creatine in grams">
+<label class="label" for="quickSteps">Steps</label><input id="quickSteps" type="number" min="0" step="1" placeholder="Steps">
+<button id="quickLogSave" class="btn" style="margin-top:12px" type="submit">SAVE DAILY LOG</button><div id="quickLogMsg" class="muted" style="margin-top:10px" role="status"></div>
+</form></div>
+<div class="card"><h2>Today's Nutrition Entry</h2><form id="nutritionForm" onsubmit="event.preventDefault();saveNutrition()">
+<label class="label" for="entryCalories">Calories</label><input id="entryCalories" type="number" min="0" step="1" placeholder="Calories">
+<label class="label" for="entryProtein">Protein (g)</label><input id="entryProtein" type="number" min="0" step="any" placeholder="Protein in grams">
+<label class="label" for="entryCarbs">Carbs (g)</label><input id="entryCarbs" type="number" min="0" step="any" placeholder="Carbs in grams">
+<label class="label" for="entryFat">Fat (g)</label><input id="entryFat" type="number" min="0" step="any" placeholder="Fat in grams">
+<label class="label" for="entryFiber">Fiber (g)</label><input id="entryFiber" type="number" min="0" step="any" placeholder="Fiber in grams">
+<button id="nutritionSave" class="btn" style="margin-top:12px" type="submit">SAVE NUTRITION</button><div id="nutritionMsg" class="muted" style="margin-top:10px" role="status"></div>
+</form></div>
 </section>
 
 
@@ -64,7 +80,7 @@ body.iron{--a:#9da8b6;--b:#e0e5eb;background:radial-gradient(circle at 90% 0,#34
 
 <section id="road" class="section"><div class="card"><h2>Road Map</h2><div class="item"><b>🔥 Cut Month</b><div class="muted">Current phase • Fat loss + strength retention</div></div><div class="item"><b>Strength Block</b><div class="muted">Progressive overload</div></div><div class="item"><b>Advanced Block</b><div class="muted">Advanced AI-assisted programming</div></div><div class="item"><b>Deload</b><div class="muted">Recovery and reduced volume</div></div><div class="item"><b>Next Cut</b><div class="muted">Targets recalculated from actual progress</div></div></div></section>
 
-<section id="weigh" class="section"><div class="card"><h2>Weigh-In</h2><input id="w" inputmode="decimal" placeholder="Today's weight (lb)"><button class="btn" onclick="saveW()">SAVE WEIGH-IN</button><div id="wm" class="muted" style="margin-top:10px">Prototype saves this entry locally on this device/browser.</div></div></section>
+<section id="weigh" class="section"><div class="card"><h2>Weigh-In</h2><input id="w" inputmode="decimal" placeholder="Today's weight (lb)"><button class="btn" onclick="saveW()">SAVE WEIGH-IN</button><div id="wm" class="muted" style="margin-top:10px">Your weigh-in syncs securely to your Build Back Fitness account.</div></div></section>
 
 
 <section id="progress" class="section">
@@ -99,13 +115,192 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let currentUser=null;
 
 function authOverlay(){
+  if(document.getElementById("authGate"))return;
   let d=document.createElement("div"); d.id="authGate"; d.style.cssText="position:fixed;inset:0;background:#090a0d;z-index:9999;padding:28px;overflow:auto";
-  d.innerHTML=`<div style="max-width:520px;margin:50px auto"><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • SECURE SYNC</div><div class="card" style="margin-top:24px"><h2>Sign in to your tracker</h2><div class="muted">Your entries will sync securely to your Build Back Fitness database.</div><input id="authEmail" type="email" placeholder="Email" autocomplete="email"><input id="authPass" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><button class="btn" onclick="signIn()">SIGN IN</button><button class="btn ghost" style="margin-top:10px" onclick="signUp()">CREATE ACCOUNT</button><div id="authMsg" class="muted" style="margin-top:12px"></div></div></div>`;
+  d.innerHTML=`<div style="max-width:520px;margin:50px auto"><div class="logo">BUILD <i>BACK</i></div><div class="sub">FITNESS • SECURE SYNC</div><div class="card" style="margin-top:24px"><h2>Sign in to your tracker</h2><div class="muted">Your entries will sync securely to your Build Back Fitness database.</div><input id="authEmail" type="email" placeholder="Email" autocomplete="email"><input id="authPass" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><button class="btn" onclick="signIn()">SIGN IN</button><button class="btn ghost" style="margin-top:10px" onclick="signUp()">CREATE ACCOUNT</button><button class="chip" style="margin-top:12px" onclick="forgotPassword()">FORGOT PASSWORD?</button><div id="authMsg" class="muted" style="margin-top:12px" role="status"></div></div></div>`;
   document.body.appendChild(d);
 }
 async function signIn(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Signing in…";let {data,error}=await db.auth.signInWithPassword({email,password});if(error){authMsg.textContent=error.message;return;}currentUser=data.user;authGate.remove();await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}
 async function signUp(){let email=authEmail.value.trim(),password=authPass.value;authMsg.textContent="Creating account…";let {data,error}=await db.auth.signUp({email,password});if(error){authMsg.textContent=error.message;return;}if(data.session){currentUser=data.user;authGate.remove();await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}else authMsg.textContent="Account created. Check your email to confirm it, then come back and sign in.";}
 
+
+function latestGoalQuery(userId){
+  return db.from("fitness_goals").select("id,starting_weight,goal_weight,target_date").eq("user_id",userId).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);
+}
+async function openGoalSetup(){
+  if(!currentUser)return;
+  const userId=currentUser.id;
+  document.getElementById("goalSetup").hidden=false;
+  document.getElementById("goalForm").reset();
+  const message=document.getElementById("goalMsg"),button=document.getElementById("goalSave");
+  message.textContent="Loading goal…";
+  button.disabled=true;
+  try{
+    const {data,error}=await latestGoalQuery(userId);
+    if(currentUser?.id!==userId)return;
+    if(error)throw error;
+    const goal=data?.[0];
+    document.getElementById("goalStart").value=goal?.starting_weight??"";
+    document.getElementById("goalTarget").value=goal?.goal_weight??"";
+    document.getElementById("goalDate").value=goal?.target_date??"";
+    message.textContent="";
+  }catch(error){
+    if(currentUser?.id===userId)message.textContent="Could not load goal: "+error.message;
+  }finally{button.disabled=false;}
+}
+let goalSaving=false;
+async function saveGoal(){
+  if(goalSaving)return;
+  const message=document.getElementById("goalMsg");
+  if(!currentUser){message.textContent="Please sign in first.";return;}
+  if(!document.getElementById("goalForm").reportValidity())return;
+  const starting=dashboardNumber(document.getElementById("goalStart").value),target=dashboardNumber(document.getElementById("goalTarget").value);
+  if(!(starting>0&&target>0)){message.textContent="Enter valid starting and goal weights.";return;}
+  const userId=currentUser.id;
+  const values={starting_weight:starting,goal_weight:target,target_date:document.getElementById("goalDate").value||null,user_id:userId};
+  goalSaving=true;
+  document.getElementById("goalSave").disabled=true;
+  message.textContent="Saving…";
+  try{
+    const {data,error}=await latestGoalQuery(userId);
+    if(error)throw error;
+    if(currentUser?.id!==userId)return;
+    const row=data?.[0];
+    const result=row
+      ?await db.from("fitness_goals").update(values).eq("user_id",userId).eq("id",row.id).select("id")
+      :await db.from("fitness_goals").insert(values).select("id");
+    if(result.error)throw result.error;
+    if(!result.data?.length)throw new Error("No goal was saved. Please try again.");
+    if(currentUser?.id!==userId)return;
+    message.textContent="Goal saved successfully.";
+    await loadTodayDashboard();
+  }catch(error){
+    if(currentUser?.id===userId)message.textContent="Could not save goal: "+error.message;
+  }finally{
+    goalSaving=false;
+    document.getElementById("goalSave").disabled=false;
+  }
+}
+async function forgotPassword(){
+  const email=document.getElementById("authEmail").value.trim(),message=document.getElementById("authMsg");
+  if(!email){message.textContent="Enter your email address first, then tap FORGOT PASSWORD?";return;}
+  if(!document.getElementById("authEmail").reportValidity())return;
+  message.textContent="Sending password reset email…";
+  try{
+    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+    if(error)throw error;
+    message.textContent="Password reset requested. Check your email for a reset link.";
+  }catch(error){message.textContent="Could not send reset email: "+error.message;}
+}
+function showPasswordReset(){
+  document.getElementById("authGate")?.remove();
+  const gate=document.createElement("div");
+  gate.id="authGate";
+  gate.style.cssText="position:fixed;inset:0;background:#090a0d;z-index:9999;padding:28px;overflow:auto";
+  gate.innerHTML=`<div style="max-width:520px;margin:50px auto"><div class="logo">BUILD <i>BACK</i></div><div class="card"><h2>Set a new password</h2><form onsubmit="event.preventDefault();resetPassword()"><input id="newPassword" type="password" minlength="6" required placeholder="New password (6+ characters)" autocomplete="new-password"><button id="resetPasswordSave" class="btn" type="submit">SAVE PASSWORD</button><div id="resetPasswordMsg" class="muted" style="margin-top:12px" role="status"></div></form></div></div>`;
+  document.body.appendChild(gate);
+}
+async function resetPassword(){
+  const message=document.getElementById("resetPasswordMsg"),button=document.getElementById("resetPasswordSave");
+  const password=document.getElementById("newPassword").value;
+  if(password.length<6){message.textContent="Use at least 6 characters.";return;}
+  button.disabled=true;
+  message.textContent="Saving password…";
+  try{
+    const {data,error}=await db.auth.updateUser({password});
+    if(error)throw error;
+    currentUser=data.user;
+    message.textContent="Password updated successfully.";
+    const continueButton=document.createElement("button");
+    continueButton.className="btn ghost";
+    continueButton.style.marginTop="12px";
+    continueButton.textContent="CONTINUE TO TODAY";
+    continueButton.onclick=()=>{document.getElementById("authGate")?.remove();show("today");loadLatestWeight();};
+    message.appendChild(continueButton);
+  }catch(error){message.textContent="Could not update password: "+error.message;button.disabled=false;}
+}
+db.auth.onAuthStateChange((event,session)=>{
+  if(event==="PASSWORD_RECOVERY"){
+    currentUser=session?.user??null;
+    showPasswordReset();
+  }
+});
+async function signOut(){
+  const button=document.getElementById("signOutButton");
+  button.disabled=true;
+  try{
+    const {error}=await db.auth.signOut();
+    if(error)throw error;
+    currentUser=null;
+    ++todayRequest;
+    localStorage.removeItem("bbv4w");
+    renderTodayGoal(null,null);
+    renderTodayNutrition([]);
+    ["goalForm","quickLogForm","nutritionForm"].forEach(id=>document.getElementById(id).reset());
+    ["goalMsg","quickLogMsg","nutritionMsg"].forEach(id=>document.getElementById(id).textContent="");
+    document.getElementById("goalSetup").hidden=true;
+    document.getElementById("w").value="";
+    document.getElementById("wm").textContent="Your weigh-in syncs securely to your Build Back Fitness account.";
+    show("today");
+    authOverlay();
+  }catch(error){alert("Could not sign out: "+error.message);}
+  finally{button.disabled=false;}
+}
+function enteredDailyValues(fields){
+  const values={};
+  fields.forEach(([inputId,column,integer])=>{
+    const raw=document.getElementById(inputId).value.trim();
+    if(raw==="")return;
+    const value=Number(raw);
+    if(!Number.isFinite(value)||value<0||(integer&&!Number.isSafeInteger(value)))throw new Error("Enter valid non-negative values; calories and steps must be whole numbers.");
+    values[column]=value;
+  });
+  if(!Object.keys(values).length)throw new Error("Enter at least one value to save.");
+  return values;
+}
+let dailySaveQueue=Promise.resolve();
+function saveDailyValues(values,userId,logDate){
+  // Serialize daily saves so these forms cannot insert competing rows in this tab.
+  const task=dailySaveQueue.then(async()=>{
+    if(currentUser?.id!==userId)throw new Error("Please sign in again.");
+    const {data,error}=await db.from("daily_logs").select("id").eq("user_id",userId).eq("log_date",logDate).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);
+    if(error)throw error;
+    if(currentUser?.id!==userId)throw new Error("Please sign in again.");
+    const row=data?.[0];
+    // Only submitted fields are patched; weight and unrelated daily values remain intact.
+    const result=row
+      ?await db.from("daily_logs").update(values).eq("user_id",userId).eq("log_date",logDate).eq("id",row.id).select("id")
+      :await db.from("daily_logs").insert({...values,user_id:userId,log_date:logDate}).select("id");
+    if(result.error)throw result.error;
+    if(!result.data?.length)throw new Error("No daily log was saved. Please try again.");
+  });
+  dailySaveQueue=task.catch(()=>{});
+  return task;
+}
+async function saveDailyForm(formId,buttonId,messageId,fields,success){
+  const button=document.getElementById(buttonId),message=document.getElementById(messageId);
+  if(button.disabled)return;
+  if(!currentUser){message.textContent="Please sign in first.";return;}
+  if(!document.getElementById(formId).reportValidity())return;
+  const userId=currentUser.id;
+  button.disabled=true;
+  try{
+    const values=enteredDailyValues(fields);
+    message.textContent="Saving…";
+    await saveDailyValues(values,userId,localLogDate());
+    if(currentUser?.id!==userId)return;
+    message.textContent=success;
+    await loadTodayDashboard();
+  }catch(error){
+    if(currentUser?.id===userId)message.textContent="Could not save: "+error.message;
+  }finally{button.disabled=false;}
+}
+function saveQuickLog(){
+  return saveDailyForm("quickLogForm","quickLogSave","quickLogMsg",[["quickWater","Water_oz",false],["quickCreatine","creatine_g",false],["quickSteps","Steps",true]],"Daily log saved successfully.");
+}
+function saveNutrition(){
+  return saveDailyForm("nutritionForm","nutritionSave","nutritionMsg",[["entryCalories","calories",true],["entryProtein","protein",false],["entryCarbs","carbs",false],["entryFat","fat",false],["entryFiber","Fiber",false]],"Nutrition saved successfully.");
+}
 
 function localLogDate(){
   const now=new Date();
@@ -173,12 +368,40 @@ async function loadTodayDashboard(){
   }
 }
 
-async function loadLatestWeight(){if(!currentUser)return;let {data}=await db.from("daily_logs").select("Weight,log_date").eq("user_id",currentUser.id).not("Weight","is",null).order("log_date",{ascending:false}).limit(1);if(data&&data[0]){localStorage.setItem("bbv4w",data[0].Weight);let wm=document.getElementById("wm");if(wm)wm.textContent="Last synced: "+data[0].Weight+" lb on "+data[0].log_date;}}
+async function loadLatestWeight(){
+  if(!currentUser)return;
+  const userId=currentUser.id;
+  const {data,error}=await db.from("daily_logs").select("Weight,log_date").eq("user_id",userId).not("Weight","is",null).order("log_date",{ascending:false,nullsFirst:false}).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);
+  if(currentUser?.id!==userId||error)return;
+  if(data?.[0]){
+    localStorage.setItem("bbv4w",data[0].Weight);
+    document.getElementById("wm").textContent="Last synced: "+data[0].Weight+" lb on "+data[0].log_date;
+  }
+}
 async function initSync(){let {data}=await db.auth.getSession();if(data.session){currentUser=data.session.user;await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}else authOverlay();}
 
 function pickDay(el,d){document.querySelectorAll('#calendar .chip').forEach(x=>x.style.background='#ffffff08');el.style.background='var(--a)';document.getElementById('selectedDate').textContent='October '+d+', 2026';}
 function show(id){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('on',e.dataset.x===id));scrollTo(0,0);if(id==='today')loadTodayDashboard();}
 let themes=['','blue','iron'],ti=0;function cycleTheme(){ti=(ti+1)%themes.length;document.body.className=themes[ti]}
-async function saveW(){let x=parseFloat(document.getElementById('w').value);if(!x)return;if(!currentUser){document.getElementById('wm').textContent='Please sign in first.';return;}let today=localLogDate();document.getElementById('wm').textContent='Saving…';let {error}=await db.from('daily_logs').insert({user_id:currentUser.id,log_date:today,Weight:x});if(error){document.getElementById('wm').textContent='Could not sync: '+error.message;return;}localStorage.setItem('bbv4w',x);document.getElementById('wm').textContent='Synced securely: '+x+' lb';await loadTodayDashboard();}
+let weighSaving=false;
+async function saveW(){
+  if(weighSaving)return;
+  const x=dashboardNumber(document.getElementById("w").value),message=document.getElementById("wm");
+  if(!(x>0)){message.textContent="Enter a valid weight greater than zero.";return;}
+  if(!currentUser){message.textContent="Please sign in first.";return;}
+  const userId=currentUser.id;
+  weighSaving=true;
+  message.textContent="Saving…";
+  try{
+    const {error}=await db.from("daily_logs").insert({user_id:userId,log_date:localLogDate(),Weight:x});
+    if(error)throw error;
+    if(currentUser?.id!==userId)return;
+    localStorage.setItem("bbv4w",x);
+    message.textContent="Synced securely: "+x+" lb";
+    await loadTodayDashboard();
+  }catch(error){
+    if(currentUser?.id===userId)message.textContent="Could not sync: "+error.message;
+  }finally{weighSaving=false;}
+}
 window.addEventListener('load',initSync);
 </script></body></html>
