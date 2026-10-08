@@ -25,6 +25,7 @@ body.iron{--a:#9da8b6;--b:#e0e5eb;background:radial-gradient(circle at 90% 0,#34
 <div class="card"><h2>Today's Mission</h2><div class="flex"><div class="stat"><div class="label">Workout</div><div class="muted" style="margin-top:6px">No workout planned</div></div><div class="stat"><div class="label">Readiness</div><div class="big">— / 5</div><div class="muted">Before workout</div></div></div><button class="btn" style="margin-top:12px" onclick="show('workout')">START WORKOUT</button></div>
 <div class="card"><h2>Nutrition</h2><div class="grid"><div class="tile"><b>Calories</b><span id="todayCalories" class="muted">— / target</span></div><div class="tile"><b>Protein</b><span id="todayProtein" class="muted">— g</span></div><div class="tile"><b>Carbs</b><span id="todayCarbs" class="muted">— g</span></div><div class="tile"><b>Fat</b><span id="todayFat" class="muted">— g</span></div><div class="tile"><b>Fiber</b><span id="todayFiber" class="muted">— g</span></div><div class="tile"><b>Water</b><span id="todayWater" class="muted">— oz</span></div></div></div>
 
+<div class="card"><button class="btn ghost" onclick="openDailyTargets()">DAILY TARGETS</button></div>
 <div class="card"><h2>Quick Daily Log</h2><form id="quickLogForm" onsubmit="event.preventDefault();saveQuickLog()">
 <label class="label" for="quickWater">Water (oz)</label><input id="quickWater" type="number" min="0" step="any" placeholder="Water in ounces">
 <label class="label" for="quickCreatine">Creatine (g)</label><input id="quickCreatine" type="number" min="0" step="any" placeholder="Creatine in grams">
@@ -43,23 +44,35 @@ body.iron{--a:#9da8b6;--b:#e0e5eb;background:radial-gradient(circle at 90% 0,#34
 
 
 <section id="calendar" class="section">
-<div class="card"><div class="label">Training calendar</div><h2>October 2026</h2>
-<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:12px">
-<div class="muted">S</div><div class="muted">M</div><div class="muted">T</div><div class="muted">W</div><div class="muted">T</div><div class="muted">F</div><div class="muted">S</div>
-<div></div><div></div><div></div><div></div>
-<button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,1)">1</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,2)">2</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,3)">3</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,4)">4</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,5)">5</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,6)">6</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,7)">7</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,8)">8</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,9)">9</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,10)">10</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,11)">11</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,12)">12</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,13)">13</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,14)">14</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,15)">15</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,16)">16</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,17)">17</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,18)">18</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,19)">19</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,20)">20</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,21)">21</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,22)">22</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,23)">23</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,24)">24</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,25)">25</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,26)">26</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,27)">27</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,28)">28</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,29)">29</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,30)">30</button><button class="chip" style="margin:0;padding:10px 2px" onclick="pickDay(this,31)">31</button>
-</div></div>
-<div class="card"><div class="label">Selected date</div><h2 id="selectedDate">October 4, 2026</h2>
-<div class="quote" style="font-size:16px">Consistency compounds.</div>
-<div class="grid" style="margin-top:12px">
-<div class="tile"><b>Calories</b><span class="muted">—</span></div>
-<div class="tile"><b>Protein</b><span class="muted">— g</span></div>
-<div class="tile"><b>Water</b><span class="muted">— oz</span></div>
-<div class="tile"><b>Weight</b><span class="muted">— lb</span></div>
+<div class="card">
+<div class="label">Training calendar</div>
+<div class="flex" style="align-items:center"><button class="chip" onclick="moveCalendarMonth(-1)" aria-label="Previous month">‹</button><h2 id="calendarMonth" style="text-align:center;flex:3"></h2><button class="chip" onclick="moveCalendarMonth(1)" aria-label="Next month">›</button></div>
+<div class="flex"><button class="btn ghost" onclick="calendarToday()">TODAY</button><button class="btn ghost" onclick="openDailyTargets()">DAILY TARGETS</button></div>
+<div id="calendarStatus" class="muted" style="margin:12px 0" role="status"></div>
+<div id="calendarGrid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center;font-size:12px"></div>
+<div class="muted" style="margin-top:12px;line-height:1.8"><span style="color:var(--gold)">● Gold = Today</span> • <span style="color:#75db9b">● Green = 90–100%</span><br><span style="color:#ffe07a">● Yellow = 75–89%</span> • <span style="color:#ff8791">● Red = Below 75%</span></div>
+<div class="muted" style="margin-top:8px">Future dates stay dark. Set daily targets to enable scoring. Missing logs earn no credit for their daily values.</div>
 </div>
+<div class="card"><div class="label">Selected date</div><h2 id="selectedDate">—</h2><div id="selectedScore" class="big">Daily Score: —</div>
+<div id="selectedValues" class="grid" style="margin-top:12px"></div>
+<div class="item"><b>Hit</b><div id="selectedHit" class="muted">—</div></div>
+<div class="item"><b>Close</b><div id="selectedClose" class="muted">—</div></div>
+<div class="item"><b>Needs Work</b><div id="selectedNeeds" class="muted">—</div></div>
+<div class="item"><b>Workout plan</b><div id="selectedSchedule" class="muted">No workout scheduled</div><button id="scheduleSave" class="chip" style="margin-top:8px" onclick="toggleSelectedWorkout()">SCHEDULE WORKOUT</button><div id="scheduleMsg" class="muted" role="status"></div></div>
 <div class="flex" style="margin-top:12px"><button class="btn ghost" onclick="show('food')">🍽 Nutrition & Daily</button><button class="btn ghost" onclick="show('workout')">🏋 Workout</button></div>
-<div class="item"><b>Road Map Phase</b><div class="muted">Cut Month • Planned vs. actual activity will live here.</div></div>
-</div></section>
+</div>
+<div class="card"><div class="label">Monthly summary</div><h2 id="summaryMonth">—</h2><div id="monthlySummary" class="grid"></div><div class="muted" style="margin-top:12px">Score averages and color counts include elapsed past days only. Weight averages use one latest weigh-in per day. Current targets apply to all displayed dates.</div></div>
+</section>
+
+<section id="targets" class="section"><div class="card"><h2>Daily Targets</h2><div class="muted">Set your daily targets to enable calendar scores. Targets and workout plans sync to your account. Changing targets recalculates past scores.</div>
+<form id="targetsForm" onsubmit="event.preventDefault();saveDailyTargets()">
+<label class="label" for="targetCalories">Calorie target</label><input id="targetCalories" type="number" min="1" step="1" required>
+<label class="label" for="targetProtein">Protein target (g)</label><input id="targetProtein" type="number" min="0.1" step="any" required>
+<label class="label" for="targetFiber">Fiber target (g)</label><input id="targetFiber" type="number" min="0.1" step="any" required>
+<label class="label" for="targetWater">Water target (oz)</label><input id="targetWater" type="number" min="0.1" step="any" required>
+<label class="label" for="targetCreatine">Creatine target (g)</label><input id="targetCreatine" type="number" min="0.1" step="any" required>
+<button id="targetsSave" class="btn" style="margin-top:12px" type="submit">SAVE TARGETS</button><div id="targetsMsg" class="muted" style="margin-top:10px" role="status"></div>
+</form><div class="flex" style="margin-top:12px"><button class="btn ghost" onclick="show('today')">TODAY</button><button class="btn ghost" onclick="show('calendar')">CALENDAR</button></div></div></section>
 
 <section id="milestones" class="section">
 <div class="card"><div class="label goldtxt">Trophy case</div><h2>🏆 Milestones</h2><div class="muted">Achievements unlock automatically from the data you log. No manually awarding yourself trophies. Society has standards.</div></div>
@@ -174,6 +187,7 @@ async function saveGoal(){
     if(currentUser?.id!==userId)return;
     message.textContent="Goal saved successfully.";
     await loadTodayDashboard();
+    await refreshCalendarAfterSave();
   }catch(error){
     if(currentUser?.id===userId)message.textContent="Could not save goal: "+error.message;
   }finally{
@@ -233,6 +247,7 @@ async function signOut(){
     if(error)throw error;
     currentUser=null;
     ++todayRequest;
+    clearCalendarState();
     localStorage.removeItem("bbv4w");
     renderTodayGoal(null,null);
     renderTodayNutrition([]);
@@ -260,22 +275,20 @@ function enteredDailyValues(fields){
 }
 let dailySaveQueue=Promise.resolve();
 function saveDailyValues(values,userId,logDate){
-  // Serialize daily saves so these forms cannot insert competing rows in this tab.
   const task=dailySaveQueue.then(async()=>{
     if(currentUser?.id!==userId)throw new Error("Please sign in again.");
     const {data,error}=await db.from("daily_logs").select("id").eq("user_id",userId).eq("log_date",logDate).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);
     if(error)throw error;
     if(currentUser?.id!==userId)throw new Error("Please sign in again.");
     const row=data?.[0];
-    // Only submitted fields are patched; weight and unrelated daily values remain intact.
     const result=row
       ?await db.from("daily_logs").update(values).eq("user_id",userId).eq("log_date",logDate).eq("id",row.id).select("id")
       :await db.from("daily_logs").insert({...values,user_id:userId,log_date:logDate}).select("id");
     if(result.error)throw result.error;
     if(!result.data?.length)throw new Error("No daily log was saved. Please try again.");
   });
-  dailySaveQueue=task.catch(()=>{});
-  return task;
+    dailySaveQueue=task.catch(()=>{});
+    return task;
 }
 async function saveDailyForm(formId,buttonId,messageId,fields,success){
   const button=document.getElementById(buttonId),message=document.getElementById(messageId);
@@ -291,6 +304,7 @@ async function saveDailyForm(formId,buttonId,messageId,fields,success){
     if(currentUser?.id!==userId)return;
     message.textContent=success;
     await loadTodayDashboard();
+    await refreshCalendarAfterSave();
   }catch(error){
     if(currentUser?.id===userId)message.textContent="Could not save: "+error.message;
   }finally{button.disabled=false;}
@@ -333,7 +347,6 @@ function renderTodayGoal(goal,weight){
   document.getElementById("todayMilestoneStatus").textContent=progress===null?"Your next milestone will calculate from your real starting, current and goal weights.":progress>=100?"Goal reached at "+dashboardValue(target)+" lb.":"Reach approximately "+dashboardValue(next.weight)+" lb ("+dashboardValue(Math.abs(current-next.weight))+" lb to go).";
 }
 function renderTodayNutrition(rows){
-  // Weigh-ins insert separate rows, so a newer weight-only row must not hide nutrition.
   [["Calories","calories",""],["Protein","protein"," g"],["Carbs","carbs"," g"],["Fat","fat"," g"],["Fiber","Fiber"," g"],["Water","Water_oz"," oz"]].forEach(([label,column,unit])=>{
     const row=rows.find(entry=>dashboardNumber(entry[column])!==null);
     document.getElementById("today"+label).textContent=dashboardValue(dashboardNumber(row?.[column]))+unit;
@@ -380,8 +393,7 @@ async function loadLatestWeight(){
 }
 async function initSync(){let {data}=await db.auth.getSession();if(data.session){currentUser=data.session.user;await Promise.all([loadLatestWeight(),loadTodayDashboard()]);}else authOverlay();}
 
-function pickDay(el,d){document.querySelectorAll('#calendar .chip').forEach(x=>x.style.background='#ffffff08');el.style.background='var(--a)';document.getElementById('selectedDate').textContent='October '+d+', 2026';}
-function show(id){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('on',e.dataset.x===id));scrollTo(0,0);if(id==='today')loadTodayDashboard();}
+function show(id){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('on',e.dataset.x===id));scrollTo(0,0);if(id==='today')loadTodayDashboard();if(id==='calendar')calendarToday();}
 let themes=['','blue','iron'],ti=0;function cycleTheme(){ti=(ti+1)%themes.length;document.body.className=themes[ti]}
 let weighSaving=false;
 async function saveW(){
@@ -399,9 +411,310 @@ async function saveW(){
     localStorage.setItem("bbv4w",x);
     message.textContent="Synced securely: "+x+" lb";
     await loadTodayDashboard();
+    await refreshCalendarAfterSave();
   }catch(error){
     if(currentUser?.id===userId)message.textContent="Could not sync: "+error.message;
   }finally{weighSaving=false;}
 }
+
+const scoreFields=["calories","protein","Fiber","Water_oz","creatine_g","workout_completed","Weight","Steps"];
+const targetInputs=[["targetCalories","calories"],["targetProtein","protein"],["targetFiber","Fiber"],["targetWater","Water_oz"],["targetCreatine","creatine_g"]];
+let scoreSettings=null;
+let scoreSettingsUser=null;
+let settingsQueue=Promise.resolve();
+let calendarMonthDate=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+let calendarSelectedDate=null;
+let calendarDays={};
+let calendarReady=false;
+let calendarLoading=false;
+let calendarRequest=0;
+let calendarError="";
+
+function dateKey(date){
+  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+function dateFromKey(key){
+  const [year,month,day]=key.split("-").map(Number);
+  return new Date(year,month-1,day);
+}
+function scoreTargetsReady(targets){
+  return targetInputs.every(([,field])=>dashboardNumber(targets?.[field])>0);
+}
+function settingsFromUser(user){
+  const value=user.user_metadata?.bbf_daily_settings;
+  return {targets:value?.targets||{},scheduled:value?.scheduled||{}};
+}
+async function readScoreSettings(userId){
+  const {data,error}=await db.auth.getUser();
+  if(error)throw error;
+  if(data.user?.id!==userId||currentUser?.id!==userId)throw new Error("Please sign in again.");
+  return settingsFromUser(data.user);
+}
+function writeScoreSettings(change,userId){
+  const task=settingsQueue.then(async()=>{
+    const settings=await readScoreSettings(userId);
+    const next=change(settings);
+    if(currentUser?.id!==userId)throw new Error("Please sign in again.");
+    const {error}=await db.auth.updateUser({data:{bbf_daily_settings:next}});
+    if(error)throw error;
+    if(currentUser?.id!==userId)return;
+    scoreSettings=next;
+    scoreSettingsUser=userId;
+  });
+  settingsQueue=task.catch(()=>{});
+  return task;
+}
+async function openDailyTargets(){
+  show("targets");
+  const message=document.getElementById("targetsMsg"),button=document.getElementById("targetsSave");
+  document.getElementById("targetsForm").reset();
+  if(!currentUser){message.textContent="Please sign in first.";return;}
+  const userId=currentUser.id;
+  button.disabled=true;
+  message.textContent="Loading targets…";
+  try{
+    const settings=await readScoreSettings(userId);
+    if(currentUser?.id!==userId)return;
+    scoreSettings=settings;
+    scoreSettingsUser=userId;
+    targetInputs.forEach(([id,field])=>document.getElementById(id).value=settings.targets[field]??"");
+    message.textContent=scoreTargetsReady(settings.targets)?"":"Enter all five targets to enable scoring.";
+  }catch(error){if(currentUser?.id===userId)message.textContent="Could not load targets: "+error.message;}
+  finally{button.disabled=false;}
+}
+async function saveDailyTargets(){
+  const button=document.getElementById("targetsSave"),message=document.getElementById("targetsMsg");
+  if(button.disabled)return;
+  if(!currentUser){message.textContent="Please sign in first.";return;}
+  if(!document.getElementById("targetsForm").reportValidity())return;
+  const targets=Object.fromEntries(targetInputs.map(([id,field])=>[field,dashboardNumber(document.getElementById(id).value)]));
+  if(!scoreTargetsReady(targets)||!Number.isSafeInteger(targets.calories)){message.textContent="Enter positive targets and a whole-number calorie target.";return;}
+  const userId=currentUser.id;
+  button.disabled=true;
+  message.textContent="Saving…";
+  try{
+    await writeScoreSettings(settings=>({...settings,targets}),userId);
+    if(currentUser?.id!==userId)return;
+    message.textContent="Daily targets saved successfully.";
+    renderCalendar();
+  }catch(error){if(currentUser?.id===userId)message.textContent="Could not save targets: "+error.message;}
+  finally{button.disabled=false;}
+}
+function mergeDailyRows(rows){
+  const grouped={};
+  for(const row of rows){
+    if(!row.log_date)continue;
+    const day=grouped[row.log_date]||(grouped[row.log_date]={});
+    for(const field of scoreFields){
+      if(day[field]===undefined&&row[field]!==null&&row[field]!==undefined)day[field]=row[field];
+    }
+  }
+  return grouped;
+}
+function dailyScore(day,targets,scheduled){
+  if(!scoreTargetsReady(targets))return null;
+  const ratio=(field)=>Math.max(0,Math.min(1,(dashboardNumber(day[field])??0)/Number(targets[field])));
+  const calorieRatio=(dashboardNumber(day.calories)??0)/Number(targets.calories);
+  const calorieCredit=Math.max(0,Math.min(1,calorieRatio<0.9?calorieRatio/0.9:calorieRatio<=1.1?1:(2-calorieRatio)/0.9));
+  const categories=[
+    {name:"Calories",credit:calorieCredit},
+    {name:"Protein",credit:ratio("protein")},
+    {name:"Fiber",credit:ratio("Fiber")},
+    {name:"Water",credit:ratio("Water_oz")},
+    {name:"Creatine",credit:ratio("creatine_g")},
+    {name:"Scheduled Workout",credit:!scheduled||day.workout_completed===true?1:0}
+  ];
+  return {percent:categories.reduce((sum,item)=>sum+item.credit,0)/6*100,categories};
+}
+function scoreBand(percent){
+  return percent>=90?"green":percent>=75?"yellow":"red";
+}
+function scoreDisplay(percent){
+  return (Math.floor((percent+1e-9)*10)/10).toFixed(1)+"%";
+}
+function dayScheduled(key){
+  return scoreSettingsUser===currentUser?.id&&scoreSettings?.scheduled?.[key]===true;
+}
+function calendarTile(container,label,value){
+  const tile=document.createElement("div"),title=document.createElement("b"),text=document.createElement("span");
+  tile.className="tile";
+  title.textContent=label;
+  text.className="muted";
+  text.textContent=value;
+  tile.appendChild(title);
+  tile.appendChild(text);
+  container.appendChild(tile);
+}
+function renderCalendar(){
+  const monthLabel=calendarMonthDate.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  document.getElementById("calendarMonth").textContent=monthLabel;
+  document.getElementById("summaryMonth").textContent=monthLabel;
+  const grid=document.getElementById("calendarGrid");
+  grid.replaceChildren();
+  ["S","M","T","W","T","F","S"].forEach(label=>{
+    const header=document.createElement("div");
+    header.className="muted";header.textContent=label;grid.appendChild(header);
+  });
+  const firstDay=calendarMonthDate.getDay();
+  const count=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,0).getDate();
+  for(let blank=0;blank<firstDay;blank++)grid.appendChild(document.createElement("div"));
+  const today=localLogDate();
+  const targets=scoreSettingsUser===currentUser?.id?scoreSettings?.targets:null;
+  for(let number=1;number<=count;number++){
+    const key=dateKey(new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth(),number));
+    const score=calendarReady?dailyScore(calendarDays[key]||{},targets,dayScheduled(key)):null;
+    const button=document.createElement("button");
+    button.type="button";button.className="chip";button.textContent=number;
+    button.style.cssText="margin:0;padding:10px 2px;border-radius:12px;min-width:0";
+    let background="#ffffff08",foreground="var(--t)";
+    if(key===today){background="var(--gold)";foreground="#211800";button.setAttribute("aria-current","date");}
+    else if(key<today&&score){
+      const band=scoreBand(score.percent);
+      background={green:"#174c30",yellow:"#514312",red:"#571c27"}[band];
+      foreground={green:"#9df2b8",yellow:"#ffe07a",red:"#ffacb4"}[band];
+    }
+    button.style.background=background;button.style.color=foreground;
+    button.style.outline=key===calendarSelectedDate?"2px solid var(--t)":"none";
+    button.style.outlineOffset="1px";
+    button.setAttribute("aria-pressed",String(key===calendarSelectedDate));
+    button.setAttribute("aria-label",dateFromKey(key).toLocaleDateString(undefined,{dateStyle:"full"})+(score?", score "+scoreDisplay(score.percent):""));
+    button.onclick=()=>pickDay(key);
+    grid.appendChild(button);
+  }
+  const status=document.getElementById("calendarStatus");
+  status.textContent=calendarLoading?"Loading calendar…":calendarError?calendarError:!calendarReady?"Open Calendar to load data.":!scoreTargetsReady(targets)?"Set daily targets to calculate scores.":Object.keys(calendarDays).length?"":"No daily logs for this month yet.";
+  renderSelectedDate();
+  renderMonthlySummary();
+}
+function renderSelectedDate(){
+  const container=document.getElementById("selectedValues");container.replaceChildren();
+  document.getElementById("scheduleMsg").textContent="";
+  const key=calendarSelectedDate;
+  if(!key){
+    document.getElementById("selectedDate").textContent="—";
+    document.getElementById("selectedScore").textContent="Daily Score: —";
+    document.getElementById("selectedHit").textContent="—";
+    document.getElementById("selectedClose").textContent="—";
+    document.getElementById("selectedNeeds").textContent="—";
+    document.getElementById("selectedSchedule").textContent="—";
+    document.getElementById("scheduleSave").disabled=true;
+    return;
+  }
+  document.getElementById("selectedDate").textContent=dateFromKey(key).toLocaleDateString(undefined,{dateStyle:"long"});
+  const day=calendarDays[key]||{},scheduled=dayScheduled(key);
+  const targets=scoreSettingsUser===currentUser?.id?scoreSettings?.targets:null;
+  const score=calendarReady?dailyScore(day,targets,scheduled):null;
+  document.getElementById("selectedScore").textContent="Daily Score: "+(score?scoreDisplay(score.percent):"—");
+  const loading=!calendarReady;
+  [["Calories","calories",""],["Protein","protein"," g"],["Fiber","Fiber"," g"],["Water","Water_oz"," oz"],["Creatine","creatine_g"," g"]].forEach(([name,field,unit])=>{
+    calendarTile(container,name,(loading?"—":dashboardValue(dashboardNumber(day[field])))+" / "+dashboardValue(dashboardNumber(targets?.[field]))+unit);
+  });
+  const workout=day.workout_completed===true?"Completed":scheduled?(key>localLogDate()?"Scheduled (upcoming)":"Missed"):"Not Scheduled";
+  calendarTile(container,"Workout",loading?"—":workout);
+  calendarTile(container,"Weight",(loading?"—":dashboardValue(dashboardNumber(day.Weight)))+" lb");
+  calendarTile(container,"Steps",loading?"—":dashboardValue(dashboardNumber(day.Steps)));
+  document.getElementById("selectedHit").textContent=score?score.categories.filter(item=>item.credit===1).map(item=>item.name+" ("+scoreDisplay(item.credit*100)+")").join(", ")||"None yet.":"Set targets and load this month to see a breakdown.";
+  document.getElementById("selectedClose").textContent=score?score.categories.filter(item=>item.credit>=0.9&&item.credit<1).map(item=>item.name+" ("+scoreDisplay(item.credit*100)+" credit)").join(", ")||"None.":"—";
+  document.getElementById("selectedNeeds").textContent=score?score.categories.filter(item=>item.credit<0.9).map(item=>item.name+" ("+scoreDisplay(item.credit*100)+" credit)").join(", ")||"No categories below 90% credit.":"—";
+  document.getElementById("selectedSchedule").textContent=scheduled?"Workout scheduled for this date.":"No workout scheduled for this date.";
+  const button=document.getElementById("scheduleSave");
+  button.textContent=scheduled?"REMOVE SCHEDULED WORKOUT":"SCHEDULE WORKOUT";
+  button.disabled=!calendarReady||scoreSettingsUser!==currentUser?.id;
+}
+function renderMonthlySummary(){
+  const container=document.getElementById("monthlySummary");container.replaceChildren();
+  const today=localLogDate(),targets=scoreSettingsUser===currentUser?.id?scoreSettings?.targets:null;
+  const count=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,0).getDate();
+  const scores=[],weights=[],bands={green:0,yellow:0,red:0};
+  let workouts=0,pastDays=0;
+  for(let number=1;number<=count;number++){
+    const key=dateKey(new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth(),number));
+    if(key>=today)continue;
+    pastDays++;
+    const day=calendarDays[key]||{},score=calendarReady?dailyScore(day,targets,dayScheduled(key)):null;
+    if(score){scores.push(score.percent);bands[scoreBand(score.percent)]++;}
+    if(calendarReady&&day.workout_completed===true)workouts++;
+    const weight=dashboardNumber(day.Weight);
+    if(calendarReady&&weight>0)weights.push(weight);
+  }
+  calendarTile(container,"Average daily score",scores.length?scoreDisplay(scores.reduce((sum,value)=>sum+value,0)/scores.length):"—");
+  calendarTile(container,"Green days",scores.length?String(bands.green):"—");
+  calendarTile(container,"Yellow days",scores.length?String(bands.yellow):"—");
+  calendarTile(container,"Red days",scores.length?String(bands.red):"—");
+  calendarTile(container,"Workouts completed",calendarReady?String(workouts):"—");
+  calendarTile(container,"Average weight",weights.length?dashboardValue(weights.reduce((sum,value)=>sum+value,0)/weights.length)+" lb":"—");
+  calendarTile(container,"Completed past days",String(pastDays));
+}
+async function loadCalendarMonth(){
+  if(!currentUser)return;
+  const userId=currentUser.id,request=++calendarRequest;
+  const start=dateKey(calendarMonthDate),end=dateKey(new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,1));
+  calendarReady=false;calendarLoading=true;calendarError="";calendarDays={};
+  renderCalendar();
+  try{
+    const readRows=async()=>{
+      const rows=[];
+      for(let offset=0;;offset+=1000){
+        const {data,error}=await db.from("daily_logs").select("id,created_at,log_date,calories,protein,Fiber,Water_oz,creatine_g,workout_completed,Weight,Steps").eq("user_id",userId).gte("log_date",start).lt("log_date",end).order("created_at",{ascending:false}).order("id",{ascending:false}).range(offset,offset+999);
+        if(error)throw error;
+        if(currentUser?.id!==userId||request!==calendarRequest)return null;
+        rows.push(...(data||[]));
+        if((data||[]).length<1000)return rows;
+      }
+    };
+    const [rows,settings]=await Promise.all([readRows(),readScoreSettings(userId)]);
+    if(currentUser?.id!==userId||request!==calendarRequest||rows===null)return;
+    calendarDays=mergeDailyRows(rows);
+    scoreSettings=settings;scoreSettingsUser=userId;
+    calendarReady=true;
+  }catch(error){
+    if(currentUser?.id!==userId||request!==calendarRequest)return;
+    calendarError="Could not load calendar: "+error.message+". Reopen Calendar to retry.";
+  }finally{
+    if(currentUser?.id===userId&&request===calendarRequest){calendarLoading=false;renderCalendar();}
+  }
+}
+function calendarToday(){
+  const now=new Date();
+  calendarMonthDate=new Date(now.getFullYear(),now.getMonth(),1);
+  calendarSelectedDate=dateKey(now);
+  return loadCalendarMonth();
+}
+function moveCalendarMonth(offset){
+  calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+offset,1);
+  calendarSelectedDate=dateKey(calendarMonthDate);
+  return loadCalendarMonth();
+}
+function pickDay(key){
+  calendarSelectedDate=key;
+  renderCalendar();
+}
+async function toggleSelectedWorkout(){
+  const button=document.getElementById("scheduleSave"),message=document.getElementById("scheduleMsg");
+  if(button.disabled||!currentUser||!calendarSelectedDate)return;
+  const userId=currentUser.id,key=calendarSelectedDate,scheduled=!dayScheduled(key);
+  button.disabled=true;
+  message.textContent="Saving workout plan…";
+  try{
+    await writeScoreSettings(settings=>({...settings,scheduled:{...settings.scheduled,[key]:scheduled}}),userId);
+    if(currentUser?.id!==userId)return;
+    renderCalendar();
+    if(calendarSelectedDate===key)message.textContent="Workout plan saved successfully.";
+  }catch(error){if(currentUser?.id===userId)message.textContent="Could not save workout plan: "+error.message;}
+  finally{button.disabled=!calendarReady;}
+}
+async function refreshCalendarAfterSave(){
+  if(document.getElementById("calendar").classList.contains("active"))await loadCalendarMonth();
+  else{calendarReady=false;++calendarRequest;}
+}
+function clearCalendarState(){
+  ++calendarRequest;
+  calendarReady=false;calendarLoading=false;calendarError="";calendarDays={};
+  scoreSettings=null;scoreSettingsUser=null;calendarSelectedDate=null;
+  document.getElementById("targetsForm").reset();
+  document.getElementById("targetsMsg").textContent="";
+  renderCalendar();
+}
+
 window.addEventListener('load',initSync);
 </script></body></html>
